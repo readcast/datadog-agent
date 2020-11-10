@@ -687,6 +687,7 @@ dogstatsd_arm64_size_test:
 .build_clang_common:
   rules:
     - when: manual
+      allow_failure: true
   stage: deps_build
   timeout: 2h 00m
   script:
