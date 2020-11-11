@@ -373,6 +373,7 @@ def omnibus_build(
     system_probe_bin=None,
     libbcc_tarball=None,
     with_bcc=True,
+    libclang_tarball=None,
 ):
     """
     Build the Agent packages with Omnibus Installer.
@@ -470,6 +471,8 @@ def omnibus_build(
                 env['SYSTEM_PROBE_BIN'] = system_probe_bin
             if libbcc_tarball is not None:
                 env['LIBBCC_TARBALL'] = libbcc_tarball
+            if libclang_tarball is not None:
+                env['LIBCLANG_TARBALL'] = libclang_tarball
             omnibus_start = datetime.datetime.now()
             ctx.run(cmd.format(**args), env=env)
             omnibus_done = datetime.datetime.now()
