@@ -1,4 +1,4 @@
-#define KBUILD_MODNAME "foo"
+#define KBUILD_MODNAME "ddsysprobe"
 #include <linux/oom.h>
 
 #include "pkg/ebpf/c/bpf-common.h"

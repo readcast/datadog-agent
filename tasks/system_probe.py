@@ -281,6 +281,7 @@ def build_object_files(ctx, bundle_ebpf=False):
     print("checking for clang executable...")
     ctx.run("which clang")
     print("found clang")
+    ctx.run("clang -v")
 
     centos_headers_dir = "/usr/src/kernels"
     debian_headers_dir = "/usr/src"
@@ -298,7 +299,7 @@ def build_object_files(ctx, bundle_ebpf=False):
         '-D__KERNEL__',
         '-DCONFIG_64BIT',
         '-D__BPF_TRACING__',
-        '-DKBUILD_MODNAME="\\"foo\\""',
+        '-DKBUILD_MODNAME=ddsysprobe',
         '-Wno-unused-value',
         '-Wno-pointer-sign',
         '-Wno-compare-distinct-pointer-types',
@@ -310,6 +311,9 @@ def build_object_files(ctx, bundle_ebpf=False):
         '-emit-llvm',
         # Some linux distributions enable stack protector by default which is not available on eBPF
         '-fno-stack-protector',
+        '-fno-color-diagnostics',
+        '-fno-unwind-tables',
+        '-fno-asynchronous-unwind-tables',
     ]
 
     # Mapping used by the kernel, from https://elixir.bootlin.com/linux/latest/source/scripts/subarch.include
