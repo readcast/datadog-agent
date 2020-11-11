@@ -713,7 +713,7 @@ dogstatsd_arm64_size_test:
       ../llvm
     - cmake --build . --target install
     - cd $DATADOG_AGENT_EMBEDDED_PATH
-    - rm -rf bin share libexec lib/clang lib/cmake lib/*.so*
+    - rm -rf bin share libexec lib/cmake lib/*.so*
     - tar cvaf /tmp/clang.tar.xz .
     - $S3_CP_CMD /tmp/clang.tar.xz $S3_PERMANENT_ARTIFACTS_URI/clang-$ARCH-11.0.0.tar.xz
 
