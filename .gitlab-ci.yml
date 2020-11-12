@@ -802,7 +802,7 @@ build_system-probe-arm64:
     - $S3_CP_CMD $S3_ARTIFACTS_URI/libbcc-${PACKAGE_ARCH}.tar.xz /tmp/libbcc.tar.xz
     - $S3_CP_CMD $S3_PERMANENT_ARTIFACTS_URI/clang-${PACKAGE_ARCH}-11.0.0.tar.xz /tmp/clang.tar.xz
     # exclude everything but /lib/clang from clang tarball to make libclang tarball
-    - tar -t --exclude lib/clang -f clang.tar.xz > /tmp/excludefiles
+    - tar -t --exclude lib/clang -f /tmp/clang.tar.xz > /tmp/excludefiles
     - unxz /tmp/clang.tar.xz && tar --delete --no-recursion -T /tmp/excludefiles -f /tmp/clang.tar && xz /tmp/clang.tar
     # Use --skip-deps since the deps are installed by `before_script`.
     - inv -e agent.omnibus-build --release-version "$RELEASE_VERSION" --major-version "$AGENT_MAJOR_VERSION" --python-runtimes "$PYTHON_RUNTIMES" --base-dir $OMNIBUS_BASE_DIR ${USE_S3_CACHING} --skip-deps --system-probe-bin=/tmp/system-probe --libbcc-tarball=/tmp/libbcc.tar.xz --libclang-tarball=/tmp/clang.tar.xz
@@ -987,7 +987,7 @@ iot_agent_deb-armhf:
     - $S3_CP_CMD $S3_ARTIFACTS_URI/libbcc-${PACKAGE_ARCH}.tar.xz /tmp/libbcc.tar.xz
     - $S3_CP_CMD $S3_PERMANENT_ARTIFACTS_URI/clang-${PACKAGE_ARCH}-11.0.0.tar.xz /tmp/clang.tar.xz
     # exclude everything but /lib/clang from clang tarball to make libclang tarball
-    - tar -t --exclude lib/clang -f clang.tar.xz > /tmp/excludefiles
+    - tar -t --exclude lib/clang -f /tmp/clang.tar.xz > /tmp/excludefiles
     - unxz /tmp/clang.tar.xz && tar --delete --no-recursion -T /tmp/excludefiles -f /tmp/clang.tar && xz /tmp/clang.tar
     # use --skip-deps since the deps are installed by `before_script`
     - inv -e agent.omnibus-build --release-version "$RELEASE_VERSION" --major-version "$AGENT_MAJOR_VERSION" --python-runtimes "$PYTHON_RUNTIMES" --base-dir $OMNIBUS_BASE_DIR  ${USE_S3_CACHING} --skip-deps --system-probe-bin=/tmp/system-probe --libbcc-tarball=/tmp/libbcc.tar.xz --libclang-tarball=/tmp/clang.tar.xz
@@ -1157,7 +1157,7 @@ iot_agent_rpm-armhf:
     - $S3_CP_CMD $S3_ARTIFACTS_URI/libbcc-${PACKAGE_ARCH}.tar.xz /tmp/libbcc.tar.xz
     - $S3_CP_CMD $S3_PERMANENT_ARTIFACTS_URI/clang-${PACKAGE_ARCH}-11.0.0.tar.xz /tmp/clang.tar.xz
     # exclude everything but /lib/clang from clang tarball to make libclang tarball
-    - tar -t --exclude lib/clang -f clang.tar.xz > /tmp/excludefiles
+    - tar -t --exclude lib/clang -f /tmp/clang.tar.xz > /tmp/excludefiles
     - unxz /tmp/clang.tar.xz && tar --delete --no-recursion -T /tmp/excludefiles -f /tmp/clang.tar && xz /tmp/clang.tar
     # use --skip-deps since the deps are installed by `before_script`
     - inv -e agent.omnibus-build --release-version "$RELEASE_VERSION" --major-version "$AGENT_MAJOR_VERSION" --python-runtimes "$PYTHON_RUNTIMES" --base-dir $OMNIBUS_BASE_DIR_SUSE ${USE_S3_CACHING} --skip-deps --system-probe-bin=/tmp/system-probe --libbcc-tarball=/tmp/libbcc.tar.xz --libclang-tarball=/tmp/clang.tar.xz
