@@ -93,10 +93,9 @@ int __attribute__((always_inline)) trace__sys_unlink_ret(struct pt_regs *ctx) {
         link_dentry_inode(syscall->unlink.path_key, inode);
     }
 
-    u64 enabled;
-    LOAD_CONSTANT("unlink_event_enabled", enabled);
-
-    if (enabled) {
+    u64 enabled_events = get_enabled_events();
+    if (mask_has_event(enabled_events, EVENT_UNLINK) ||
+        mask_has_event(enabled_events, EVENT_RMDIR)) {
         struct unlink_event_t event = {
             .event.type = syscall->unlink.flags&AT_REMOVEDIR ? EVENT_RMDIR : EVENT_UNLINK,
             .event.timestamp = bpf_ktime_get_ns(),

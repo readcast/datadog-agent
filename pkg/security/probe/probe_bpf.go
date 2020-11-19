@@ -50,7 +50,6 @@ type onDiscarderHandler func(rs *rules.RuleSet, event *Event, probe *Probe, disc
 var (
 	allApproversHandlers = make(map[eval.EventType]onApproverHandler)
 	allDiscarderHandlers = make(map[eval.EventType]onDiscarderHandler)
-	constantEditors      = make(map[eval.EventType][]manager.ConstantEditor)
 )
 
 // Probe represents the runtime security eBPF probe in charge of
@@ -137,10 +136,6 @@ func (p *Probe) Init() error {
 
 	if selectors, exists := probes.SelectorsPerEventType["*"]; exists {
 		p.managerOptions.ActivatedProbes = append(p.managerOptions.ActivatedProbes, selectors...)
-	}
-
-	for _, constants := range constantEditors {
-		p.managerOptions.ConstantEditors = append(p.managerOptions.ConstantEditors, constants...)
 	}
 
 	if err := p.manager.InitWithOptions(bytecodeReader, p.managerOptions); err != nil {
@@ -590,6 +585,26 @@ func (p *Probe) SelectProbes(rs *rules.RuleSet) error {
 		log.Tracef("probe %s selected", id)
 	}
 
+	enabledEventsMap, err := p.Map("enabled_events")
+	if err != nil {
+		return err
+	}
+
+	enabledEvents := uint64(0)
+	for _, eventName := range rs.GetEventTypes() {
+		if eventName != "*" {
+			eventType := parseEvalEventType(eventName)
+			if eventType == UnknownEventType {
+				return fmt.Errorf("unknown event type '%s'", eventName)
+			}
+			enabledEvents |= 1 << (eventType - 1)
+		}
+	}
+
+	if err := enabledEventsMap.Put(ebpf.ZeroUint32MapItem, enabledEvents); err != nil {
+		return errors.Wrap(err, "failed to set enabled events")
+	}
+
 	return p.manager.UpdateActivatedProbes(activatedProbes)
 }
 
@@ -882,18 +897,4 @@ func init() {
 				return "removexattr.filename", event.RemoveXAttr.MountID, event.RemoveXAttr.Inode, event.RemoveXAttr.PathID, false
 			}))
 	SupportedDiscarders["removexattr.filename"] = true
-
-	// constant rewrites
-	constantEditors["unlink"] = []manager.ConstantEditor{
-		{Name: "unlink_event_enabled", Value: uint64(1)},
-	}
-
-	constantEditors["rmdir"] = []manager.ConstantEditor{
-		{Name: "rmdir_event_enabled", Value: uint64(1)},
-		{Name: "unlink_event_enabled", Value: uint64(1)},
-	}
-
-	constantEditors["rename"] = []manager.ConstantEditor{
-		{Name: "rename_event_enabled", Value: uint64(1)},
-	}
 }
