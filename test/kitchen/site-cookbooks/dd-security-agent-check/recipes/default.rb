@@ -32,6 +32,7 @@ if node['platform_family'] != 'windows'
       apt_update
 
       package 'gnupg'
+      package 'xfsprogs'
     end
 
     docker_service 'default' do
