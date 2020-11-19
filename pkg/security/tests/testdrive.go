@@ -63,7 +63,7 @@ func newTestDriveWithMountPoint(fsType string, mountOpts []string, mountPoint st
 		}
 	}
 
-	if err := os.Truncate(backingFile.Name(), 1*1024*1024); err != nil {
+	if err := os.Truncate(backingFile.Name(), 20*1024*1024); err != nil {
 		os.Remove(backingFile.Name())
 		os.RemoveAll(mountPoint)
 
@@ -86,7 +86,7 @@ func newTestDriveWithMountPoint(fsType string, mountOpts []string, mountPoint st
 		_ = dev.Detach()
 		os.Remove(backingFile.Name())
 		os.RemoveAll(mountPoint)
-		return nil, errors.Wrap(err, "failed to create testdrive ext4 filesystem")
+		return nil, errors.Wrapf(err, "failed to create testdrive %s filesystem", fsType)
 	}
 
 	mountCmd := exec.Command("mount", "-o", strings.Join(mountOpts, ","), dev.Path(), mountPoint)
